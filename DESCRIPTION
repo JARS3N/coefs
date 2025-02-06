@@ -1,0 +1,16 @@
+Package: coefs
+Type: Package
+Title: A Package for Fetching Barcode Coefficients
+Version: 0.1.0
+Authors@R: person("jars3n", email = "jars3n@gmail.com", role = c("aut", "cre"))
+Description: Fetches barcode coefficients and provides a Shiny app.
+Depends: R (>= 3.5)
+Imports:
+    shiny,
+    dplyr,
+    pool,
+    DBI,
+    RMySQL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
