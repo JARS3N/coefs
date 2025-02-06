@@ -4,12 +4,12 @@ server <- function(input, output, session) {
   lotstuff <- coefs::lots()  # Fetch lot data
 
   # Ensure updateSelectInput() runs only when session is ready
-  observe({
+  shiny::observe({
     shiny::updateSelectInput(session, 'Lot', choices = lotstuff$LotNumber)
   })
 
   # Observe selection of a lot
-  observeEvent(input$Lot, {
+  shiny::observeEvent(input$Lot, {
     if (!is.null(input$Lot) && input$Lot != 'SELECT') {
       BMID <- lotstuff$BMID[lotstuff$LotNumber == input$Lot]
       info <- coefs::fetch(BMID)
