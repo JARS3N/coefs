@@ -15,22 +15,24 @@ fetch <- function(BMID) {
                     WHERE ID = %d", BMID)
 
   tryCatch({
-    suppressWarnings({
-      result <- DBI::dbGetQuery(db_pool, query)
+    conn <- pool::poolCheckout(db_pool)  # Retrieve connection from pool
+    
+    result <- suppressWarnings(DBI::dbGetQuery(conn, query))  # Execute query with suppressed warnings
+    
+    pool::poolReturn(conn)  # Return connection to pool
 
-      # Convert correct data types in R
-      result <- result %>%
-        dplyr::mutate(
-          PH_A = as.integer(PH_A),
-          O2_A = as.integer(O2_A),
-          PH_B = as.double(PH_B),
-          PH_C = as.double(PH_C),
-          O2_B = as.double(O2_B),
-          BF = as.double(BF)
-        )
+    # Ensure correct types in R
+    result <- result %>%
+      dplyr::mutate(
+        PH_A = as.integer(PH_A),   # Convert PH_A to integer
+        O2_A = as.integer(O2_A),   # Convert O2_A to integer
+        PH_B = as.double(PH_B),    # Keep PH_B as double
+        PH_C = as.double(PH_C),    # Keep PH_C as double
+        O2_B = as.double(O2_B),    # Keep O2_B as double
+        BF = as.double(BF)         # Keep BF as double
+      )
 
-      return(result)
-    })
+    return(result)
   }, error = function(e) {
     warning("Database query failed: ", e$message)
     return(NULL)
