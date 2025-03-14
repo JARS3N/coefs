@@ -52,7 +52,7 @@ server <- function(input, output, session) {
       # If checkbox is checked, find all lots with the same BMID
       if (input$show_matching_lots) {
         output$matching_lots_table <- renderTable({
-          yourPackageName::get_matching_lots(db_pool, BMID)
+          coefs::get_matching_lots(db_pool, BMID)
         })
       } else {
         output$matching_lots_table <- renderTable(NULL)
