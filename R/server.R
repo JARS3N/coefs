@@ -10,7 +10,7 @@ server <- function(input, output, session) {
   library(adminKraken)
   
   # Retrieve database credentials
-  x <- sharpen(triton())
+  x <- adminKraken::sharpen(adminKraken::triton())
 
   # Establish database connection
   db_pool <- dbPool(
