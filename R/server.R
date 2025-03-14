@@ -7,9 +7,10 @@ server <- function(input, output, session) {
   library(RMySQL)
   library(dplyr)
   library(glue)
+  library(adminKraken)
   
   # Retrieve database credentials
-  x <- adminKraken::sharpen(triton())
+  x <- sharpen(triton())
 
   # Establish database connection
   db_pool <- dbPool(
