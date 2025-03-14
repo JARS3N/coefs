@@ -13,7 +13,7 @@ get_matching_lots <- function(db_pool, bmid) {
      LIMIT 100;",
     bmid
   )
-  
+
   cat("Executing Query:", query, "\n")  # Debugging output
   
   tryCatch({
@@ -29,3 +29,4 @@ get_matching_lots <- function(db_pool, bmid) {
     return(data.frame(Error = "Failed to retrieve matching lots"))
   })
 }
+
