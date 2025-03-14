@@ -1,3 +1,4 @@
+#' @export
 .onLoad <- function(libname, pkgname) {
   message("Loading coefs package...")
 
