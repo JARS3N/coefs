@@ -1,7 +1,7 @@
 #' Shiny server logic
 #' @export
 server <- function(input, output, session) {
-  library(shiny)
+library(shiny)
 library(DBI)
 library(pool)
 library(RMySQL)
