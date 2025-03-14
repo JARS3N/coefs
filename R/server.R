@@ -7,38 +7,7 @@ server <- function(input, output, session) {
   library(RMySQL)
   library(dplyr)
   library(glue)
-
-  # Function to retrieve lots with the same BMID
-  get_matching_lots <- function(db_pool, bmid) {
-    if (missing(bmid) || is.null(bmid)) {
-      warning("Invalid BMID provided.")
-      return(data.frame(Error = "Invalid BMID"))
-    }
-    
-    query <- sprintf(
-      "SELECT CONCAT(`Type`, `Lot Number`) AS LotID
-       FROM lotview
-       WHERE `Barcode Matrix ID` = '%s'
-       LIMIT 100;",
-      bmid
-    )
-    
-    cat("Executing Query:", query, "\n")  # Debugging output
-    
-    tryCatch({
-      matching_lots <- DBI::dbGetQuery(db_pool, query)
-      
-      if (nrow(matching_lots) == 0) {
-        return(data.frame(Message = "No other lots with this BMID"))
-      }
-      
-      return(matching_lots)
-    }, error = function(e) {
-      warning("Database query failed: ", e$message)
-      return(data.frame(Error = "Failed to retrieve matching lots"))
-    })
-  }
-
+  
   # Retrieve database credentials from adminKraken
   x <- adminKraken::sharpen(triton())
 
@@ -125,7 +94,7 @@ server <- function(input, output, session) {
       # If checkbox is checked, find all lots with the same BMID
       if (input$show_matching_lots) {
         output$matching_lots_table <- renderTable({
-          get_matching_lots(db_pool, BMID)
+          yourPackageName::get_matching_lots(db_pool, BMID)  # Call function from package
         })
       } else {
         output$matching_lots_table <- renderTable(NULL)
