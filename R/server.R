@@ -1,6 +1,16 @@
 #' Shiny server logic
 #' @export
 server <- function(input, output, session) {
+  x<-sharpen(triton())
+# Establish database connection using pool
+db_pool <- dbPool(
+  drv = RMySQL::MySQL(),
+  dbname = x['dbname'],
+  host = x['host'],
+  username = x['user'],
+  password = x['password'],
+  port = 3306
+)
   lotstuff <- coefs::lots()  # Fetch lot data
 
   shiny::observe({
