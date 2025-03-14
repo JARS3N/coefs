@@ -1,3 +1,5 @@
+#' Retrieve lots with the same BMID
+#' @export
 get_matching_lots <- function(db_pool, bmid) {
   if (missing(bmid) || is.null(bmid)) {
     warning("Invalid BMID provided.")
