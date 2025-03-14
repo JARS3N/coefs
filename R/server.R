@@ -1,7 +1,7 @@
 #' Shiny server logic
 #' @export
 server <- function(input, output, session) {
-  x<-sharpen(triton())
+  x<-adminKraken::sharpen(triton())
 # Establish database connection using pool
 db_pool <- dbPool(
   drv = RMySQL::MySQL(),
