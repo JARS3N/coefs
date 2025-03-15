@@ -27,21 +27,42 @@ server <- function(input, output, session) {
     poolClose(db_pool)
   })
 
-  # Fetch all lot data on startup
+  # Fetch all lot data once on startup (No repeated DB queries)
   lotstuff <- coefs::lots()
 
-  # Update Lot dropdown dynamically
+  # ✅ **Update Lot dropdown when filters change (NO new DB query)**
   observe({
-    filtered_lots <- lotstuff
+    filtered_lots <- lotstuff  # Work with in-memory data
 
+    # Apply Type filter
     if (input$Type != "All") {
       filtered_lots <- filtered_lots[grep(paste0("^", input$Type), filtered_lots$LotNumber), ]
     }
 
-    # Debugging: Print filtered lots
-    cat("Filtered Lots:\n")
-    print(filtered_lots)
+    # Apply Year filter (last two digits of Lot Number)
+    if (nchar(input$Year) == 2 && grepl("^[0-9]{2}$", input$Year)) {
+      year_value <- as.numeric(input$Year)
+      lot_years <- as.numeric(substr(filtered_lots$LotNumber, nchar(filtered_lots$LotNumber) - 1, nchar(filtered_lots$LotNumber)))
 
+      if (input$YearFilter == "=") {
+        filtered_lots <- filtered_lots[lot_years == year_value, ]
+      } else if (input$YearFilter == "≥") {
+        filtered_lots <- filtered_lots[lot_years >= year_value, ]
+      } else if (input$YearFilter == "≤") {
+        filtered_lots <- filtered_lots[lot_years <= year_value, ]
+      }
+    }
+
+    # Apply Experimental Lots filter
+    if (!input$include_experimental) {
+      filtered_lots <- filtered_lots[!grepl("^.E", filtered_lots$LotNumber), ]
+    }
+
+    # Debugging Output
+    cat("Updated Lot Dropdown:\n")
+    print(filtered_lots$LotNumber)
+
+    # Update Lot dropdown (without hitting the DB)
     updateSelectInput(session, 'Lot', choices = filtered_lots$LotNumber)
   })
 
