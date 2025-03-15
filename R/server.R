@@ -43,13 +43,14 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'Lot', choices = filtered_lots$LotNumber)
   })
 
-  # Fetch and display data when a lot is selected
-  observeEvent(input$Lot, {
+  # ✅ **Trigger updates when Lot is selected OR checkbox is toggled**
+  observeEvent(c(input$Lot, input$show_matching_lots), {
     if (!is.null(input$Lot) && input$Lot != "SELECT") {
       BMID <- lotstuff$BMID[lotstuff$LotNumber == input$Lot]
 
-      # Debugging: Print BMID
+      # Debugging output
       cat("Selected BMID:", BMID, "\n")
+      cat("Checkbox State:", input$show_matching_lots, "\n")
 
       info <- coefs::fetch(BMID)
 
@@ -82,7 +83,7 @@ server <- function(input, output, session) {
         dplyr::select(info, Cartridge_BufferFactor = BF)
       }, digits = 6)
 
-      # If checkbox is checked, find all lots with the same BMID
+      # ✅ **Trigger update when checkbox is checked/unchecked**
       if (input$show_matching_lots) {
         output$matching_lots_table <- renderTable({
           coefs::get_matching_lots(db_pool, BMID)
