@@ -1,3 +1,5 @@
+#' server function
+#' @export
 server <- function(input, output, session) {
   library(shiny)
   library(DBI)
